@@ -46,6 +46,7 @@ def markups(buttons):
 
 def menu_markups(user):
     answer = markups(["Поиск противника🔍", "Настройки⚙️", "Информацияℹ️"])
+    return answer
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
@@ -81,13 +82,17 @@ class MessageHandler:
     def found(bot, message, user):
         bot.send_message(user["id"], "Поиск соперника", reply_markup=menu_markups(user))        
         user_update(user, status="found")
-        if 
-        return MessageHandler.Game.menu(bot, message, user)
+        a = database.select('users', 'id',[["status", "=", "found"]])
+        b = len(a) - 1
+        c = a[random.randint(0, b)]
+        c = c[0]
+        print(c)
+
+        return True
     
     class Game:
         def menu(bot, message, user):
-            user_update(user, status="game")
-            bot.send_message(user["id"], "Игра найденна", reply_markup=markups("Стоп"))
+            bot.send_message(user["id"], "Игра найдена", reply_markup=markups("Стоп"))
             if "СТОП" in message.text:
                 bot.send_message(user["id"], "Вы уверенны?", reply_markups=markups("Да", "Отмена"))
 
@@ -101,8 +106,8 @@ class MessageHandler:
                 
         def to_menu(bot, message, user):
             bot.send_message(user["id"], "Хорошего дня", reply_markup=menu_markups(user))
-            user_update(user, status="game_menu")
-            return True
+            user_update(user, status="menu")
+            return MessageHandler.to_menu
     
 
 @bot.message_handler(content_types=["text"])
